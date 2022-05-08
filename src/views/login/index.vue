@@ -6,11 +6,15 @@
       </div>
       <el-form-item props="username">
         <svg-icon icon="user" class="svg-container"></svg-icon>
-        <el-input v-model="form.name" />
+        <el-input v-model="form.username" />
       </el-form-item>
       <el-form-item props="password">
         <svg-icon icon="password" class="svg-container"></svg-icon>
-        <el-input v-model="form.password" />
+        <el-input v-model="form.password" :type="passwordType" />
+        <svg-icon
+          :icon="passwordType === 'password' ? 'eye' : 'eye-open'"
+          @click="changeType"
+        ></svg-icon>
       </el-form-item>
       <el-button type="primary" class="login-button" @click="handleLogin"
         >登录</el-button
@@ -21,10 +25,11 @@
 
 <script setup>
 import { ref } from 'vue'
+import { login } from '@/api/login'
 // import { Edit } from '@element-plus/icons-vue'
 const form = ref({
-  username: '用户名',
-  password: '密码'
+  username: '',
+  password: ''
 })
 const rules = ref({
   username: [
@@ -36,14 +41,24 @@ const rules = ref({
 })
 const formRef = ref(null)
 const handleLogin = () => {
-  formRef.value.validate((valid) => {
+  formRef.value.validate(async (valid) => {
     if (valid) {
-      alert('submit!')
+      // alert('submit!')
+      const res = await login(form.value)
+      console.log(res)
     } else {
       console.log('error submit!!')
       return false
     }
   })
+}
+const passwordType = ref('password')
+const changeType = () => {
+  if (passwordType.value === 'password') {
+    passwordType.value = 'text'
+  } else {
+    passwordType.value = 'password'
+  }
 }
 </script>
 
@@ -76,7 +91,6 @@ $cursor: #fff;
 
     ::v-deep .el-input {
       // display: inline-block;
-      display: contents;
       height: 47px;
       width: 85%;
 
@@ -86,10 +100,14 @@ $cursor: #fff;
         -webkit-appearance: none;
         border-radius: 0px;
         padding: 12px 5px 12px 15px;
-        color: $light_gray;
+        // color: $light_gray;
         height: 47px;
         caret-color: $cursor;
       }
+    }
+    .el-input__wrapper {
+      background-color: none;
+      box-shadow: none;
     }
     .login-button {
       width: 100%;
