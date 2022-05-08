@@ -1,33 +1,50 @@
 <template>
   <div class="login-container">
-    <el-form ref="formRef" :model="form" class="login-form">
+    <el-form ref="formRef" :model="form" class="login-form" :rules="rules">
       <div class="title-container">
         <h3 class="title">用户登录</h3>
       </div>
-      <el-form-item>
-        <el-icon :size="20" class="svg-container">
-          <edit />
-        </el-icon>
+      <el-form-item props="username">
+        <svg-icon icon="user" class="svg-container"></svg-icon>
         <el-input v-model="form.name" />
       </el-form-item>
-      <el-form-item>
-        <el-icon :size="20" class="svg-container">
-          <edit />
-        </el-icon>
+      <el-form-item props="password">
+        <svg-icon icon="password" class="svg-container"></svg-icon>
         <el-input v-model="form.password" />
       </el-form-item>
-      <el-button type="primary" class="login-button">登录</el-button>
+      <el-button type="primary" class="login-button" @click="handleLogin"
+        >登录</el-button
+      >
     </el-form>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import { Edit } from '@element-plus/icons-vue'
+// import { Edit } from '@element-plus/icons-vue'
 const form = ref({
-  name: '请输入账号',
-  password: '请输入密码'
+  username: '用户名',
+  password: '密码'
 })
+const rules = ref({
+  username: [
+    { required: true, message: 'Please input Activity name', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: 'Please input your password', trigger: 'blur' }
+  ]
+})
+const formRef = ref(null)
+const handleLogin = () => {
+  formRef.value.validate((valid) => {
+    if (valid) {
+      alert('submit!')
+    } else {
+      console.log('error submit!!')
+      return false
+    }
+  })
+}
 </script>
 
 <style lang="scss" scoped>
@@ -59,8 +76,9 @@ $cursor: #fff;
 
     ::v-deep .el-input {
       // display: inline-block;
+      display: contents;
       height: 47px;
-      width: 92%;
+      width: 85%;
 
       input {
         background: transparent;
