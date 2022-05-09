@@ -13,6 +13,7 @@ function resolve(dir) {
 }
 const webpack = require('webpack')
 module.exports = {
+  lintOnSave: false, //关闭语法检查
   configureWebpack: (config) => {
     config.plugins.push(
       AutoImport({
@@ -73,7 +74,7 @@ module.exports = {
   },
   devServer: {
     https: false,
-    hotOnly: false,
+    hot: 'only',
     proxy: {
       '/api': {
         target: 'https://lianghj.top:8888/api/private/v1/',
